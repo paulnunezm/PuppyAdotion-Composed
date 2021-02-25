@@ -22,8 +22,8 @@ data class Puppy(
     val Gender: Gender
 )
 
-enum class Breed {
-    CORGI, PUG
+enum class Breed(val breedName: String) {
+    CORGI("Corgi"), PUG("Pug")
 }
 
 enum class Gender(val gender: String) {

@@ -19,6 +19,9 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.androiddevchallenge.ui.theme.MyTheme
 
@@ -36,7 +39,19 @@ class MainActivity : AppCompatActivity() {
 // Start building your app here!
 @Composable
 fun MyApp() {
-    PuppiesListScreen()
+    val selectedPuppy: MutableState<Puppy?> = remember { mutableStateOf(null) }
+
+    if (selectedPuppy.value == null) {
+        PuppiesListScreen {
+            selectedPuppy.value = it
+        }
+    } else {
+        selectedPuppy.value?.let {
+            PuppyDetailsScreen(it) {
+                selectedPuppy.value = null
+            }
+        }
+    }
 }
 
 @Preview("Light Theme", widthDp = 360, heightDp = 640)

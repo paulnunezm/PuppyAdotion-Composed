@@ -17,7 +17,9 @@ package com.example.androiddevchallenge
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -48,61 +50,67 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.androiddevchallenge.ui.theme.MyTheme
+import com.example.androiddevchallenge.ui.theme.darkBlue
 import com.example.androiddevchallenge.ui.theme.lightGray
 
 @Composable
-fun PuppiesListScreen() {
+fun PuppiesListScreen(onPuppyListItemClicked: (Puppy) -> Unit) {
     val puppies = arrayListOf(
-        Puppy("Boltie", 2, Breed.CORGI, Gender.MALE),
-        Puppy("Max", 2, Breed.CORGI, Gender.MALE),
-        Puppy("Max", 2, Breed.CORGI, Gender.MALE),
-        Puppy("Max", 2, Breed.CORGI, Gender.MALE)
+        Puppy("Haru", 1, Breed.CORGI, Gender.MALE),
+        Puppy("Boltie", 2, Breed.PUG, Gender.FEMALE),
+        Puppy("Max", 4, Breed.CORGI, Gender.FEMALE),
+        Puppy("Bolt", 3, Breed.PUG, Gender.MALE)
     )
 
-    Column(
+    Box(
         modifier = Modifier
-            .background(MaterialTheme.colors.background)
-            .padding(8.dp)
+            .background(MaterialTheme.colors.background).fillMaxHeight()
     ) {
+        Column(
+            modifier = Modifier.background(MaterialTheme.colors.background).padding(8.dp)
+        ) {
+            Spacer(modifier = Modifier.size(20.dp))
 
-        Spacer(modifier = Modifier.size(20.dp))
+            Text(
+                text = "Adoppy",
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 38.sp,
+                color = MaterialTheme.colors.onBackground,
+            )
 
-        Text(
-            text = "Adoppy",
-            fontWeight = FontWeight.ExtraBold,
-            fontSize = 38.sp,
-            color = MaterialTheme.colors.onBackground,
-        )
+            Text(
+                text = "Give a happy place for a puppy to be",
+                fontWeight = FontWeight.Light,
+                fontSize = 16.sp,
+                color = lightGray
+            )
 
-        Text(
-            text = "Give a happy place for a puppy to be",
-            fontWeight = FontWeight.Light,
-            fontSize = 16.sp,
-            color = lightGray
-        )
+            Spacer(modifier = Modifier.size(20.dp))
 
-        Spacer(modifier = Modifier.size(20.dp))
-
-        LazyColumn {
-            items(puppies) {
-                PuppyListItem(puppy = it)
-                Spacer(modifier = Modifier.size(6.dp))
+            LazyColumn {
+                items(puppies) {
+                    PuppyListItem(puppy = it, onPuppyListItemClicked)
+                    Spacer(modifier = Modifier.size(6.dp))
+                }
             }
         }
     }
 }
 
 @Composable
-private fun PuppyListItem(puppy: Puppy) {
+private fun PuppyListItem(puppy: Puppy, onPuppyListItemClicked: (Puppy) -> Unit) {
     Card(
         elevation = 4.dp,
         modifier = Modifier
             .fillMaxWidth()
             .requiredHeight(130.dp)
             .clip(shape = RoundedCornerShape(8.dp))
+            .clickable {
+                onPuppyListItemClicked(puppy)
+            }
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
-            PuppyListItemImageContainer()
+            PuppyListItemImageContainer(puppy.breed)
             Column(modifier = Modifier.padding(8.dp)) {
                 Text(
                     text = puppy.name,
@@ -130,7 +138,8 @@ private fun PuppyListItem(puppy: Puppy) {
                     Icon(
                         imageVector = Icons.Outlined.LocationOn,
                         contentDescription = "Distance",
-                        Modifier.sizeIn(maxWidth = 14.dp)
+                        tint = Color.Red,
+                        modifier = Modifier.sizeIn(maxWidth = 14.dp)
                     )
                 }
             }
@@ -139,28 +148,37 @@ private fun PuppyListItem(puppy: Puppy) {
 }
 
 @Composable
-private fun PuppyListItemImageContainer() {
+private fun PuppyListItemImageContainer(puppyBreed: Breed) {
+    val imageResourceId =
+        if (puppyBreed == Breed.CORGI) R.drawable.ic_corgi_with_bone else R.drawable.ic_pug
+
     Column(
         modifier = Modifier
             .requiredWidth(140.dp)
             .fillMaxHeight()
-            .background(color = Color.Cyan),
+            .background(color = darkBlue),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_corgi_with_bone),
+            painter = painterResource(id = imageResourceId),
             contentDescription = "Puppy Image",
             modifier = Modifier.padding(12.dp)
         )
     }
 }
 
+@Preview("List item")
+@Composable
+private fun ListItemPreview() {
+    PuppyListItem(Puppy("Haru", 1, Breed.CORGI, Gender.MALE)) {}
+}
+
 @Preview("Light Theme", widthDp = 360, heightDp = 640)
 @Composable
 fun PuppiesListScreenLightPreview() {
     MyTheme {
-        MyApp()
+        PuppiesListScreen(onPuppyListItemClicked = { })
     }
 }
 
@@ -168,6 +186,6 @@ fun PuppiesListScreenLightPreview() {
 @Composable
 private fun PuppiesListScreenDarkPreview() {
     MyTheme(darkTheme = true) {
-        MyApp()
+        PuppiesListScreen(onPuppyListItemClicked = { })
     }
 }
