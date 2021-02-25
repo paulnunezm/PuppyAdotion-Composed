@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.androiddevchallenge.ui.theme
+package com.example.androiddevchallenge
 
-import androidx.compose.ui.graphics.Color
+data class Puppy(
+    val name: String,
+    val age: Int,
+    val breed: Breed,
+    val Gender: Gender
+)
 
-val purple200 = Color(0xFFBB86FC)
-val purple500 = Color(0xFF6200EE)
-val purple700 = Color(0xFF3700B3)
-val teal200 = Color(0xFF03DAC5)
-val darkBlue = Color(0xFF323859)
-val lightBlue = Color(0xFF7476ae)
-val lightGray = Color(0xFF9da0af)
-val almostWhite = Color(0xFFE5EDF5)
+enum class Breed {
+    CORGI, PUG
+}
+
+enum class Gender(val gender: String) {
+    FEMALE("Female"),
+    MALE("Male")
+}
